@@ -73,3 +73,6 @@ sudo apt-get install -y nodejs
 sudo npm install -g @anthropic-ai/claude-code @openai/codex
 
 echo "=== All installations complete! Reboot your system to load the GNOME desktop and VirtualBox permissions. ==="
+
+echo "=== 10. Installing GNOME Software with Flatpak & Snap plugins ==="
+sudo apt-get install -y gnome-software gnome-software-plugin-flatpak gnome-software-plugin-snap
