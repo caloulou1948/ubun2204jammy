@@ -13,13 +13,8 @@ echo "=== 2. Installing GNOME Desktop Environment (Minimal) ==="
 sudo apt-get install -y ubuntu-desktop-minimal
 sudo systemctl set-default graphical.target
 
-echo "=== 3. Installing core Ubuntu desktop utilities ==="
-sudo apt-get install -y \
-  git \
-  gnome-calculator \
-  gnome-disk-utility \
-  usb-creator-gtk \
-  gnome-terminal
+echo "=== 3. Installing core Ubuntu desktop & media utilities ==="
+sudo apt-get install -y git gnome-calculator gnome-disk-utility usb-creator-gtk gnome-terminal vlc
 
 echo "=== 4. Installing Oracle VirtualBox & Matching Extension Pack ==="
 sudo install -d -m 0755 /etc/apt/keyrings
@@ -48,31 +43,34 @@ echo "=== 5. Installing Firefox (Official Mozilla APT repo) ==="
 sudo snap remove firefox 2>/dev/null || true
 wget -q https://mozilla.org -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
 echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://mozilla.org mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list > /dev/null
-echo '
-Package: *
-Pin: origin packages.mozilla.org
-Pin-Priority: 1000
-' | sudo tee /etc/apt/preferences.d/mozilla > /dev/null
+echo 'Package: *\nPin: origin packages.mozilla.org\nPin-Priority: 1000' | sudo tee /etc/apt/preferences.d/mozilla > /dev/null
 sudo apt-get update
 sudo apt-get install -y firefox
 
-echo "=== 6. Installing Visual Studio Code (Official Microsoft APT repo) ==="
+echo "=== 6. Installing Brave Browser, VS Code, OBS Studio & Audacity ==="
+# Brave Browser
+sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave.com
+echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave.com stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list > /dev/null
+
+# VS Code
 wget -qO- https://microsoft.com | sudo gpg --yes --dearmor -o /etc/apt/keyrings/packages.microsoft.gpg
 echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://microsoft.com stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
-sudo apt-get update
-sudo apt-get install -y code
 
-echo "=== 7. Installing gnome-text-editor (via Flathub for Jammy) ==="
+# OBS Studio PPA
+sudo add-apt-repository -y ppa:obsproject/obs-studio
+sudo apt-get update
+sudo apt-get install -y brave-browser code obs-studio
+
+# Audacity via Flatpak
 sudo apt-get install -y flatpak
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org
-sudo flatpak install -y flathub org.gnome.TextEditor
+sudo flatpak install -y flathub org.gnome.TextEditor org.audacityteam.Audacity
 
-echo "=== 8. Installing Node.js LTS & AI CLIs (Claude Code & OpenAI Codex) ==="
+echo "=== 7. Installing Snap Store, Node.js LTS & AI CLIs ==="
+sudo apt-get install -y snapd gnome-software gnome-software-plugin-flatpak gnome-software-plugin-snap
+sudo snap install snap-store
 curl -fsSL https://nodesource.com | sudo -E bash -
 sudo apt-get install -y nodejs
 sudo npm install -g @anthropic-ai/claude-code @openai/codex
 
 echo "=== All installations complete! Reboot your system to load the GNOME desktop and VirtualBox permissions. ==="
-
-echo "=== 10. Installing GNOME Software with Flatpak & Snap plugins ==="
-sudo apt-get install -y gnome-software gnome-software-plugin-flatpak gnome-software-plugin-snap
